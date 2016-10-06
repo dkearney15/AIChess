@@ -107,52 +107,21 @@ function getMovePoints(){
 		var count = 0
 		if(finishHtml === "\u2659"){
 			//pawn
-			// if(movesWithPoints[3]){
-			// 	movesWithPoints[3].push([trio])
-			// } else {
-			// 	movesWithPoints[3] = [trio]
-			// }
 			count += 3
 		} else if (finishHtml === "\u2658") {
 			//knight
-			// if(movesWithPoints[9]){
-			// 	movesWithPoints[9].push(trio)
-			// } else {
-			// 	movesWithPoints[9] = [trio]
-			// }
 			count += 9
 		} else if (finishHtml === "\u2657") {
-			// //bishop
-			// if(movesWithPoints[9]){
-			// 	movesWithPoints[9].push(trio)
-			// } else {
-			// 	movesWithPoints[9] = [trio]
-			// }
+			//bishop
 			count += 9
 		} else if (finishHtml === "\u2656"){
 			//rook
-			// if(movesWithPoints[15]){
-			// 	movesWithPoints[15].push(trio)
-			// } else {
-			// 	movesWithPoints[15] = [trio]
-			// }
 			count += 15
 		} else if (finishHtml === "\u2655") {
 			//queen
-			// if(movesWithPoints[18]){
-			// 	movesWithPoints[18].push(trio)
-			// } else {
-			// 	movesWithPoints[18] = [trio]
-			// }
-			console.log('here I am UP HERE')
 			count += 18
 		} else if (trio[0][0] >= 3) {
 			//valuing neutral area of the board
-			// if(movesWithPoints[1]){
-			// 	movesWithPoints[1].push(trio)
-			// } else {
-			// 	movesWithPoints[1] = [trio]
-			// }
 			count += 1
 		}
 		//make move
@@ -162,44 +131,18 @@ function getMovePoints(){
 			piece.moves().forEach(function(choice){
 				if(Board.grid[choice[0]][choice[1]].value === "\u265F"){
 					//pawn
-					// if(movesWithPoints[3]){
-					// 	movesWithPoints[3].push([trio])
-					// } else {
-					// 	movesWithPoints[3] = [trio]
-					// }
 					count -= 3
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265E") {
 					//knight
-					// if(movesWithPoints[9]){
-					// 	movesWithPoints[9].push(trio)
-					// } else {
-					// 	movesWithPoints[9] = [trio]
-					// }
 					count -= 9
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265D") {
-					// //bishop
-					// if(movesWithPoints[9]){
-					// 	movesWithPoints[9].push(trio)
-					// } else {
-					// 	movesWithPoints[9] = [trio]
-					// }
+					//bishop
 					count -= 9
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265C"){
 					//rook
-					// if(movesWithPoints[15]){
-					// 	movesWithPoints[15].push(trio)
-					// } else {
-					// 	movesWithPoints[15] = [trio]
-					// }
 					count -= 15
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265B") {
-					console.log('here I am')
 					//queen
-					// if(movesWithPoints[18]){
-					// 	movesWithPoints[18].push(trio)
-					// } else {
-					// 	movesWithPoints[18] = [trio]
-					// }
 					count -= 18
 				}
 			})
