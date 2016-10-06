@@ -20,6 +20,7 @@ function makeBestMove(){
 		if(!moveAndPiece) {
 			//if no moves worth points
 			//make a random move
+			console.log('fuck it moving randomly')
 			makeRandomMove()
 			return
 		}
@@ -105,6 +106,7 @@ function getMovePoints(){
 		var startHtml = startPiece.value
 
 		var count = 0
+		var min = 0
 		if(finishHtml === "\u2659"){
 			//pawn
 			count += 3
@@ -120,10 +122,11 @@ function getMovePoints(){
 		} else if (finishHtml === "\u2655") {
 			//queen
 			count += 18
-		} else if (trio[0][0] >= 3) {
-			//valuing neutral area of the board
-			count += 1
-		}
+		} 
+		// else if (trio[0][0] >= 3) {
+		// 	//valuing neutral area of the board
+		// 	count += 1
+		// }
 		//make move
 		move(start,finish)
 		//see if move put white in check
@@ -131,30 +134,49 @@ function getMovePoints(){
 			//not sure if from a strategy standpoint this should be valued
 			count += 7
 		}
-		//evaluate board now and increment or decrement count according to white's possible moves
+		//evaluate board now and increment or decrement count according to white's best move
 		Board.opposingPieces('black').forEach(function(piece){
 			piece.moves().forEach(function(choice){
+				//this represents the best move white can make
+				min = 0
+				
 				if(Board.grid[choice[0]][choice[1]].value === "\u265F"){
 					//pawn
-					count -= 3
+					if(min > -3){
+						min = -3
+					}
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265E") {
 					//knight
-					count -= 9
+					if(min > -9 ){
+						min = -9
+					}
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265D") {
 					//bishop
-					count -= 9
+					if(min > -9 ){
+						min = -9
+					}
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265C"){
 					//rook
-					count -= 15
+					if(min > -15 ){
+						min = -15
+					}
 				} else if (Board.grid[choice[0]][choice[1]].value === "\u265B") {
 					//queen
-					count -= 18
+					if(min > -18 ){
+						min = -18
+					}
 				}
 			})
 		})
+		//the computer's move value is based on the best move
+		//the human can make after said move, while also accounting
+		//for the value of the comp's move based on pieces taken
+		count += min
 		//undo the move
 		undoMove(start,finish,finishPiece,startPiece,finishHtml,startHtml)
 		//add to the moves with points object
+		// console.log(min)
+		// console.log(count)
 		if(movesWithPoints[count]){
 			movesWithPoints[count].push(trio)
 		} else {
@@ -162,6 +184,7 @@ function getMovePoints(){
 		}
 
 	})
+	console.log(movesWithPoints)
 
 	var max = _(Object.keys(movesWithPoints)).sort(function(a,b){return a - b}).last()
 	// this is an array of the best moves looking two moves forward

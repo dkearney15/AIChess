@@ -7,7 +7,7 @@ function checkMate(color){
 	}
 	var toggle = true
 	Board.teamMoves(color).forEach(function(trio){
-		console.log(trio)
+		// console.log(trio)
 		var start = trio[0]
 		var finish = trio[1]
 		var finishPiece = trio[2]
