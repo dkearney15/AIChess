@@ -115,7 +115,8 @@ var Board = {
 		for(var i = 0; i < Board.grid.length; i++){
 			for(var j = 0; j < Board.grid.length; j++){
 				if (Board.grid[i][j].color === color){
-					Board.grid[i][j].inBoundsMoves().forEach(function(move){
+					console.log(Board.grid[i][j])
+					Board.grid[i][j].moves().forEach(function(move){
 						if (Board.grid[i][j].value !== null){
 							moves.push([(Board.grid[i][j].position), move, (Board.grid[move[0]][move[1]])])
 						}

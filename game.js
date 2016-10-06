@@ -2,19 +2,30 @@
 /////////HELPER FUNCTIONS//////////
 ///////////////////////////////////
 function checkMate(color){
-	if(!Board.inCheck()){
+	if(!Board.inCheck(color)){
 		return false
 	}
+	var toggle = true
 	Board.teamMoves(color).forEach(function(trio){
-		move(trio[0],trio[1])
-		if(Board.inCheck()){
-			undoMove(trio[0],trio[1],trio[2])
+		console.log(trio)
+		var start = trio[0]
+		var finish = trio[1]
+		var finishPiece = trio[2]
+		var startPiece = Board.grid[start[0]][start[1]]
+		var finishPiece = Board.grid[finish[0]][finish[1]]
+		var startHtml = startPiece.value
+		var finishHtml = finishPiece.value
+
+		move(start,finish)
+		if(Board.inCheck(color)){
+			undoMove(start,finish,finishPiece,startPiece,finishHtml,startHtml)
 		} else {
-			undoMove(trio[0],trio[1],trio[2])
-			return false
+			console.log('got out of check')
+			undoMove(start,finish,finishPiece,startPiece,finishHtml,startHtml)
+			toggle = false
 		}
 	})
-	return true
+	return toggle
 }
 
 function move(start,finish){
@@ -26,7 +37,6 @@ function move(start,finish){
 }
 
 function undoMove(start,finish,finishPiece,startPiece,finishHtml,startHtml){
-	// debugger;
 	Board.grid[start[0]][start[1]] = Board.grid[finish[0]][finish[1]]
     Board.grid[start[0]][start[1]].position = start
     Board.grid[finish[0]][finish[1]] = finishPiece
