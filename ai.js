@@ -1,5 +1,5 @@
 function handleComputerMove(){
-	$('.action').html('<h1>I am thinking really hard and totally not moving randomly.</h1>');
+	$('.action').html('<h1>...</h1>');
 		setTimeout(function(){ 
 			if(checkMate('black')){
 				$('.action').html('<h1>YOU WIN! HOORAY!</h1>');
@@ -8,7 +8,7 @@ function handleComputerMove(){
 				makeBestMove()
 				$('.action').html('<h1>Your turn! Select a piece and place to put it!</h1>');
 			}
-		}, 1500);
+		}, 1200);
 }
 
 
@@ -126,7 +126,12 @@ function getMovePoints(){
 		}
 		//make move
 		move(start,finish)
-		//evaluate board now and increment or decrement count accordingly
+		//see if move put white in check
+		if(Board.inCheck('white')){
+			//not sure if from a strategy standpoint this should be valued
+			count += 7
+		}
+		//evaluate board now and increment or decrement count according to white's possible moves
 		Board.opposingPieces('black').forEach(function(piece){
 			piece.moves().forEach(function(choice){
 				if(Board.grid[choice[0]][choice[1]].value === "\u265F"){
@@ -159,8 +164,6 @@ function getMovePoints(){
 	})
 
 	var max = _(Object.keys(movesWithPoints)).sort(function(a,b){return a - b}).last()
-	// console.log(max)
-	// console.log(movesWithPoints)
-	// this is an array of the best moves looking only one move forward 
+	// this is an array of the best moves looking two moves forward
 	return movesWithPoints[max]
 }
