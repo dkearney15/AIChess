@@ -47,7 +47,17 @@ function undoMove(start,finish,finishPiece,startPiece,finishHtml,startHtml){
 }
 
 function pawnPromotion(){
-
+	for(i=0;i<8;i++){
+		if(Board.grid[0][i].value === "\u265F"){
+			console.log('pawn promotion!')
+			Board.grid[0][i] = new Queen("\u265B", 'black', [0,i])
+			$('.action').html('<h1>Pawn promotion for the computer!</h1>');
+		} else if (Board.grid[7][i].value === "\u2659"){
+			console.log('pawn promotion!!!!')
+			Board.grid[0][i] = new Queen("\u2655", 'white', [0,i])
+			$('.action').html('<h1>Pawn promotion for you!!!!</h1>');
+		}
+	}
 }
 
 /////////////////////////
@@ -153,6 +163,7 @@ function takeTurn(event){
 				return
 			}
 		//do the computer's move
+		pawnPromotion()
 		handleComputerMove()
 		stage = 1
 	}
