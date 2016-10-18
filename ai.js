@@ -48,24 +48,82 @@ function inCenter(pair){
 
 function pawnPromotionMove(move, piece, color){
 	if(color === 'black'){
-		console.log('here')
 		return piece.value === "\u265F" && move[0] === 0
 	} else {
+		console.log('dealing with white')
+		console.log('move: ',move)
+		console.log('piece: ',piece)
 		return piece.value === "\u2659" && move[0] === 7
 	}
 }
 
+function getBestWhiteMove() {
+	let min = 0
+	let move;
+	let piece;
+	Board.opposingPieces('black').forEach(function(piece){
+		piece.moves().forEach(function(choice){
+			if(Board.grid[choice[0]][choice[1]].value === "\u265F"){
+				//pawn
+				if (min > -3) {
+					min = -3
+					move = choice
+					piece = piece
+				}
+			} else if (Board.grid[choice[0]][choice[1]].value === "\u265E") {
+				//knight
+				if(min > -9 ){
+					min = -9
+					move = choice
+					piece = piece
+				}
+			} else if (Board.grid[choice[0]][choice[1]].value === "\u265D") {
+				//bishop
+				if(min > -9 ){
+					min = -9
+					move = choice
+					piece = piece
+				}
+			} else if (Board.grid[choice[0]][choice[1]].value === "\u265C"){
+				//rook
+				if(min > -15 ){
+					min = -15
+					move = choice
+					piece = piece
+				}
+			} else if (Board.grid[choice[0]][choice[1]].value === "\u265B") {
+				//queen
+				if(min > -18 ){
+					min = -18
+					move = choice
+					piece = piece
+				}
+			}
+
+			// if (pawnPromotionMove(choice, piece, 'white')) {
+			// 	min -= 16
+			// }
+
+		})
+	})
+	return {move: move, min: min, piece: piece}
+}
+
 
 function getMovePoints(){
+	let movesWithPoints = {}
+
+
+
 	movesWithPieces = []
 	Board.opposingPieces('white').forEach(function(piece){
 		piece.moves().forEach(function(choice){
-			var s = piece.position
-			var f = choice
-			var fp = Board.grid[choice[0]][choice[1]]
-			var sp = piece
-			var fh = Board.grid[choice[0]][choice[1]].value
-			var sh = piece.value
+			let s = piece.position
+			let f = choice
+			let fp = Board.grid[choice[0]][choice[1]]
+			let sp = piece
+			let fh = Board.grid[choice[0]][choice[1]].value
+			let sh = piece.value
 
 			move(s,f)
 			if(!Board.inCheck('black')){
@@ -75,17 +133,16 @@ function getMovePoints(){
 		})
 	})
 
-	var movesWithPoints = {}
 	movesWithPieces.forEach(function(trio){
-		var finish = trio[0]
-		var start = trio[1].position
-		var startPiece = trio[1]
-		var finishPiece = Board.grid[trio[0][0]][trio[0][1]]
-		var finishHtml = finishPiece.value
-		var startHtml = startPiece.value
+		let finish = trio[0]
+		let start = trio[1].position
+		let startPiece = trio[1]
+		let finishPiece = Board.grid[trio[0][0]][trio[0][1]]
+		let finishHtml = finishPiece.value
+		let startHtml = startPiece.value
 
 		var count = 0
-		var min = 0
+
 		if(finishHtml === "\u2659"){
 			//pawn
 			count += 3
@@ -107,49 +164,14 @@ function getMovePoints(){
 		} else if (pawnPromotionMove(trio[1], trio[0], 'black')){
 			count += 18
 		}
+		
 		//make move
 		move(start,finish)
-		//see if move put white in check
-		if(Board.inCheck('white')){
-			//not sure if from a strategy standpoint this should be valued
-			count += 7
-		}
 		//evaluate board now and increment or decrement count according to white's best move
-		Board.opposingPieces('black').forEach(function(piece){
-			piece.moves().forEach(function(choice){
-				if(Board.grid[choice[0]][choice[1]].value === "\u265F"){
-					//pawn
-					if(min > -3){
-						min = -3
-					}
-				} else if (Board.grid[choice[0]][choice[1]].value === "\u265E") {
-					//knight
-					if(min > -9 ){
-						min = -9
-					}
-				} else if (Board.grid[choice[0]][choice[1]].value === "\u265D") {
-					//bishop
-					if(min > -9 ){
-						min = -9
-					}
-				} else if (Board.grid[choice[0]][choice[1]].value === "\u265C"){
-					//rook
-					if(min > -15 ){
-						min = -15
-					}
-				} else if (Board.grid[choice[0]][choice[1]].value === "\u265B") {
-					//queen
-					if(min > -18 ){
-						min = -18
-					}
-				}
+		let x = getBestWhiteMove()
+		let min = x.min
 
-				if (pawnPromotionMove(choice, piece, 'white')) {
-					min -= 16
-				}
-
-			})
-		})
+		
 		//the computer's move value is based on the best move
 		//the human can make after said move, while also accounting
 		//for the value of the comp's move based on pieces taken
