@@ -1,107 +1,95 @@
-var Board = {
-	grid: function(){
-		var arr = []
-		for (var i = 0; i < 8; i++) {
-			arr[i] = []
-			for (var j = 0; j < 8; j++) {
-				var x = new Piece(null,null,[i,j])
-				arr[i].push( x )
+class Board {
+
+	constructor(){
+		this.grid = function(){
+			let arr = []
+			for (let i = 0; i < 8; i++) {
+				arr[i] = []
+				for (let j = 0; j < 8; j++) {
+					let x = new Piece(null,null,[i,j])
+					arr[i].push( x )
+				}
 			}
-		}
-		return arr
-	}(),
-	pieces: _.flatten(this.grid)
-}
+			return arr
+		}()
+	}
 
+	populatePieces() {		
 
-	Board.populatePieces = function() {		
-
-		Board.grid[0][0] = new Rook("\u2656", 'white', [0,0])
-		Board.grid[0][7] = new Rook("\u2656", 'white', [0,7])
-		Board.grid[7][0] = new Rook("\u265C", 'black', [7,0])
-		Board.grid[7][7] = new Rook("\u265C", 'black', [7,7])
+		this.grid[0][0] = new Rook("\u2656", 'white', [0,0], this)
+		this.grid[0][7] = new Rook("\u2656", 'white', [0,7], this)
+		this.grid[7][0] = new Rook("\u265C", 'black', [7,0], this)
+		this.grid[7][7] = new Rook("\u265C", 'black', [7,7], this)
 	
-		Board.grid[0][2] = new Bishop("\u2657", 'white', [0,2])
-    	Board.grid[7][2] = new Bishop("\u265D", 'black', [7,2])
-    	Board.grid[0][5] = new Bishop("\u2657", 'white', [0,5])
-    	Board.grid[7][5] = new Bishop("\u265D", 'black', [7,5])
+		this.grid[0][2] = new Bishop("\u2657", 'white', [0,2], this)
+    	this.grid[7][2] = new Bishop("\u265D", 'black', [7,2], this)
+    	this.grid[0][5] = new Bishop("\u2657", 'white', [0,5], this)
+    	this.grid[7][5] = new Bishop("\u265D", 'black', [7,5], this)
 		
-		Board.grid[0][1] = new Knight("\u2658", 'white', [0,1])
-    	Board.grid[0][6] = new Knight("\u2658", 'white', [0,6])
-    	Board.grid[7][1] = new Knight("\u265E", 'black', [7,1])
-    	Board.grid[7][6] = new Knight("\u265E", 'black', [7,6])
+		this.grid[0][1] = new Knight("\u2658", 'white', [0,1], this)
+    	this.grid[0][6] = new Knight("\u2658", 'white', [0,6], this)
+    	this.grid[7][1] = new Knight("\u265E", 'black', [7,1], this)
+    	this.grid[7][6] = new Knight("\u265E", 'black', [7,6], this)
 
-		Board.grid[0][4] = new King("\u2654", 'white', [0,4])
-    	Board.grid[0][3] = new Queen("\u2655", 'white', [0,3])
-    	Board.grid[7][4] = new King("\u265A", 'black', [7,4])
-    	Board.grid[7][3] = new Queen("\u265B", 'black', [7,3])
+		this.grid[0][4] = new King("\u2654", 'white', [0,4], this)
+    	this.grid[0][3] = new Queen("\u2655", 'white', [0,3], this)
+    	this.grid[7][4] = new King("\u265A", 'black', [7,4], this)
+    	this.grid[7][3] = new Queen("\u265B", 'black', [7,3], this)
 
-    	for(var i = 0; i < 8; i++){
-			Board.grid[1][i] = new Pawn("\u2659", 'white', [1,i])
-			Board.grid[6][i] = new Pawn("\u265F", 'black', [6,i])
+    	for(let i = 0; i < 8; i++){
+			this.grid[1][i] = new Pawn("\u2659", 'white', [1,i], this)
+			this.grid[6][i] = new Pawn("\u265F", 'black', [6,i], this)
 		}
 
 	}
 
-	Board.move = function(start,finish){
-		var xS = start[0]
-		var yS = start[1]
-		var xF = finish[0]
-		var yF = finish[1]
-
-		if (!Board.grid[xS][yS].value) {
-			console.log('Please enter a valid starting position')
-		} 
-		//some part about the space being occupied
-		//is here in the ruby code, but i think it's
-		//not necesarry 
-	}
-
-	Board.inBounds = function(pos){
+	inBounds(pos){
 		return pos[0] < 8 && pos[0] >= 0 && pos[1] < 8 && pos[1]
 	}
 
-	Board.inCheck = function(color){
-		var kingPos = Board.findKing(color);
-		var movesThatKillKing = Board.opposingMoves(color).filter(function(move){
+	inCheck(color){
+		let kingPos = this.findKing(color);
+		let movesThatKillKing = this.opposingMoves(color).filter(function(move){
 			if(move && kingPos){
 				return move.toString() == kingPos.toString()
-			} else {
-				return
 			}
 		})
-		if (movesThatKillKing.length > 0) { console.log('board is in check')}
+		// if (movesThatKillKing.length > 0) { console.log('board is in check')}
 		return movesThatKillKing.length > 0
 	}
 
-	Board.opposingPieces = function(color){
-			if (color === 'white') {
-			var oppcol = 'black'
+	opposingPieces(color){
+		let board = this
+		let oppcol;
+		if (color === 'white') {
+			oppcol = 'black'
 		} else {
-			var oppcol = 'white'
+			oppcol = 'white'
 		}
-		var pieces = []
-		for(var i = 0; i < Board.grid.length; i++){
-			for(var j = 0; j < Board.grid.length; j++){
-				if (Board.grid[i][j].color === oppcol) {
-					pieces.push(Board.grid[i][j])
-				}
+		let pieces = []
+		for(let i = 0; i < board.grid.length; i++){
+			for(let j = 0; j < board.grid.length; j++){
+				if (board.grid[i][j].color === oppcol) {
+					pieces.push(board.grid[i][j])
+				}	
 			}
 		}
 		return pieces
 	}
 
-	Board.opposingMoves = function(color){
+	opposingMoves(color){
+		let board = this
+		let oppcol;
 		if (color === 'white') {
-			var oppcol = 'black'
+			oppcol = 'black'
 		} else {
-			var oppcol = 'white'
+			oppcol = 'white'
 		}
-		var moves = []
-		for(var i = 0; i < Board.grid.length; i++){
-			for(var j = 0; j < Board.grid.length; j++){
-				if (Board.grid[i][j].color === oppcol) {
-					Board.grid[i][j].moves().forEach(function(move){
+		let moves = []
+		for(let i = 0; i < board.grid.length; i++){
+			for(let j = 0; j < board.grid.length; j++){
+				if (board.grid[i][j].color === oppcol) {
+					board.grid[i][j].moves().forEach(function(move){
 						moves.push(move)
 					})
 				}
@@ -110,16 +98,24 @@ var Board = {
 		return moves
 	}
 
-	Board.teamMoves = function(color){
-		var moves = []
-		for(var i = 0; i < Board.grid.length; i++){
-			for(var j = 0; j < Board.grid.length; j++){
-				if (Board.grid[i][j].color === color){
-					console.log(Board.grid[i][j])
-					Board.grid[i][j].moves().forEach(function(move){
-						if (Board.grid[i][j].value !== null){
-							moves.push([(Board.grid[i][j].position), move, (Board.grid[move[0]][move[1]])])
+	validMoves(color){
+		let moves = [];
+		let board = this;
+		for(let i = 0; i < board.grid.length; i++){
+			for(let j = 0; j < board.grid.length; j++){
+				if (board.grid[i][j].color === color){
+					board.grid[i][j].moves().forEach(function(choice){
+						let start = [i,j];
+						let finish = choice
+						let finishPiece = board.grid[choice[0]][choice[1]]
+						let startPiece = board.grid[i][j]
+						let finishHtml = finishPiece.value
+						let startHtml = startPiece.value
+						safeMove(start,finish,board)
+						if(!board.inCheck(color)){
+							moves.push({start:start,finish:finish,finishPiece:finishPiece,startPiece:startPiece,finishHtml:finishHtml,startHtml:startHtml})
 						}
+						safeUndoMove(start,finish,finishPiece,startPiece,board)
 					})
 				}
 			}
@@ -131,16 +127,19 @@ var Board = {
 		return moves
 	}
 
-	Board.findKing = function(color){
-		for(var i = 0; i < 8; i++){
-			for(var j = 0; j < 8; j++){
-				if(Board.grid[i][j].value === "\u2654" && color === 'white'){
-					var kingPos = [i,j]
+	findKing(color){
+		let kingPos;
+		for(let i = 0; i < 8; i++){
+			for(let j = 0; j < 8; j++){
+				if(this.grid[i][j].value === "\u2654" && color === 'white'){
+					kingPos = [i,j]
 				}
-				else if (Board.grid[i][j].value === "\u265A" && color === 'black'){
-					var kingPos = [i,j]
+				else if (this.grid[i][j].value === "\u265A" && color === 'black'){
+					kingPos = [i,j]
 				}
 			}
 		}
 		return kingPos
 	}
+
+}
