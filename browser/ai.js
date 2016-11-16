@@ -122,7 +122,7 @@ function findBestMove(board, parentNode){
 			count += 1
 			board.validMoves(color).forEach( (obj) => {
 				x += 1
-				if(x%500===0){console.log(x)}
+				if(x%500===0){console.log(x + ' moves evaluated')}
 
 				let value = evaluateMove(obj,color,board) + parentNode.value;
 				let move;
@@ -147,7 +147,6 @@ function findBestMove(board, parentNode){
 			} )
 
 			if(minNode){ 
-				console.log('min: ',minNode.value)
 				// if we defined minNode, then it was white's turn and we went thru all the moves
 				//found the best move for white and now we have to make it and recur
 				safeMove(minObj.start,minObj.finish,board);
@@ -159,7 +158,6 @@ function findBestMove(board, parentNode){
 			//value of the move we've been incrementing, if it's the new max or there is no max yet
 			//we record that in the bestMove array, all moves in the array have the same point value
 			if( (!max || parentNode.value > max) && parentNode.move){
-				if(max>40){console.log(max)}
 				max = parentNode.value
 				bestMove = [parentNode.move]
 			} else if( (!max || parentNode.value === max) && parentNode.move){
@@ -168,7 +166,7 @@ function findBestMove(board, parentNode){
 		}
 	}
 	recur(board, parentNode, count)
+	console.log('best move is worth ', max)
 	console.log(bestMove)
-	console.log(max)
 	return bestMove
 }

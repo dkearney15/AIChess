@@ -6,7 +6,6 @@ function checkMate(color,board){
 }
 
 function move(start,finish,board){
-	console.log('in real move')
 	board.grid[finish[0]][finish[1]] = board.grid[start[0]][start[1]]
 	board.grid[finish[0]][finish[1]].position = finish
 	board.grid[start[0]][start[1]] = new Piece
