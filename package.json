@@ -1,0 +1,15 @@
+{
+  "name": "Chess",
+  "version": "1.0.0",
+  "description": "One player chess against an AI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "dependencies": {
+    "express": ">=4.13.3"
+  }
+}
