@@ -41,10 +41,10 @@ function checkMateMove(obj,board,color){
 	let toggle = false;
 	safeMove(obj.start,obj.finish,board);
 	if( color === 'black' && checkMate('white',board) ){
-		console.log('checkmate, white would loses')
+		// console.log('checkmate, white would loses')
 		toggle = true
 	} else if ( color === 'white' && checkMate('black',board) ) {
-		console.log('checkmate, black would lose')
+		// console.log('checkmate, black would lose')
 		toggle = true
 	}
 	safeUndoMove(obj.start,obj.finish,obj.finishPiece,obj.startPiece,board);
@@ -76,6 +76,14 @@ function evaluateMove(obj,color,board){
 		} else {
 			value = 0
 		}
+
+		if(pawnPromotionMove(obj.finish,obj.startPiece,color)) { 
+			value += 16 
+			console.log('pawn promotion black: ', value)
+		}
+
+		if(checkMateMove(obj,board,color)) { value += 10000 }
+
 	} else {
 		//white move
 		if(obj.finishHtml === "\u265F"){
@@ -96,11 +104,15 @@ function evaluateMove(obj,color,board){
 		} else {
 			value = 0
 		}
+
+		if(pawnPromotionMove(obj.finish,obj.startPiece,color)) { 
+			value -= 16
+			console.log('pawn promotion white: ', value)
+		}
+
+		if(checkMateMove(obj,board,color)) { value -= 10000 }
+
 	}
-
-	if(pawnPromotionMove(obj.finish,obj.startPiece,color)) { value += 16 }
-
-	if(checkMateMove(obj,board,color)) { value += 10000 }
 
 	return value
 }
