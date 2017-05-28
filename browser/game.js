@@ -87,6 +87,7 @@ let finishPiece;
 let startPiece;
 let startHtml;
 let finishHtml;
+let currentState;
 
 
 	for(let i = 0; i < 8; i++){
@@ -118,14 +119,21 @@ function takeTurn(event){
 
 	color = event.data.color
 	if(stage === 1) {
-		if(gameBoard.inCheck('white')){
+		console.log('we tryin da new thing');
+		currentState = gameBoard.evaluate(color);
+		console.log(currentState.inCheck);
+		console.log(currentState.validMoves);
+		if(currentState.validMoves.length < 1){
+			$('.action').html('<h1>Checkmate! You Lose.</h1>');
+			return
+		} else if(currentState.inCheck){
 			$('.action').html('<h1>Be careful! You are in check!</h1>');
 		}
 		// make sure they grab a piece of their own color
 		start = [Math.floor(parseInt(this.id[0])),Math.floor(parseInt(this.id[2]))]
 		$('#' + start.join('-')).addClass('yellow');
 		if(gameBoard.grid[start[0]][start[1]].color !== color){
-			$('.action').html('<h1>Select a piece and a place to put it! (You are white btw)</h1>')
+			$('.action').html('<h1>Select a piece and a place to put it! (You are white btw)</h1>');
 			return
 		}
 		startPiece = gameBoard.grid[start[0]][start[1]]
@@ -136,26 +144,28 @@ function takeTurn(event){
 		finish = [Math.floor(parseInt(this.id[0])),Math.floor(parseInt(this.id[2]))]
 		finishPiece = gameBoard.grid[finish[0]][finish[1]]
 		finishHtml = finishPiece.value
-		if(!gameBoard.grid[start[0]][start[1]].validMove(start, finish)){
+		// if move isn't valid
+		if(!currentState.validMoves.map((move) => {return move.toString()}).includes(finish.toString())){
 			$('.action').html('<h1>That is not a valid move!</h1>');
 			stage = 1
 			return 
 		} else {
 			//make the move
 			move(start,finish,gameBoard)
-			if(gameBoard.inCheck(color)){
-				//undo it
-				$('.action').html('<h1>Cannot move into check!</h1>');
-				undoMove(start,finish,finishPiece,startPiece,finishHtml,startHtml,gameBoard)
-				stage = 1
-				setTimeout(() => { $('.action').html('<h1>Select a piece and a place to put it! (You are white btw)</h1>') }, 1500);
-				return
-			} else {
+			// we should not need this anymore since currentState.validMoves already accounts for moving into check
+			// if(gameBoard.inCheck(color)){
+			// 	//undo it
+			// 	$('.action').html('<h1>Cannot move into check!</h1>');
+			// 	undoMove(start,finish,finishPiece,startPiece,finishHtml,startHtml,gameBoard)
+			// 	stage = 1
+			// 	setTimeout(() => { $('.action').html('<h1>Select a piece and a place to put it! (You are white btw)</h1>') }, 1500);
+			// 	return
+			// } else {
 				$('#' + start.join('-')).addClass('yellow');
 				$('#' + finish.join('-')).addClass('yellow');
 				pawnPromotion(gameBoard)
 				$('.action').html('<h1>Nice Move!</h1>');
-			}
+			// }
 		}
 		//check for check mate
 			if(checkMate('white',gameBoard)){

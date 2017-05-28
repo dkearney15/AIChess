@@ -40,10 +40,10 @@ function pawnPromotionMove(move, piece, color){
 function checkMateMove(obj,board,color){
 	let toggle = false;
 	safeMove(obj.start,obj.finish,board);
-	if( color === 'black' && checkMate('white',board) ){
+	if( color === 'black' && checkMate('white', board) ){
 		// console.log('checkmate, white would loses')
 		toggle = true
-	} else if ( color === 'white' && checkMate('black',board) ) {
+	} else if ( color === 'white' && checkMate('black', board) ) {
 		// console.log('checkmate, black would lose')
 		toggle = true
 	}

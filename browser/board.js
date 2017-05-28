@@ -120,10 +120,6 @@ class Board {
 				}
 			}
 		}
-		//each item in moves is an array of 3 things
-		//0: start position
-		//1: finish position
-		//2: finish piece
 		return moves
 	}
 
@@ -140,6 +136,111 @@ class Board {
 			}
 		}
 		return kingPos
+	}
+
+	evaluate(turnColor){
+		let test = 0;
+
+		let board = this; //for sanity and scoping issues
+		let blackKingPos;
+		let whiteKingPos;
+		let whitePieces = [];
+		let blackPieces = [];
+		let boardInCheck;
+		let takingTurnPieces;
+		let takingTurnKingPos;
+		let opposingPieces;
+		let validMoves = [];
+		// run through the board, bigO is constant right now, exactly 64
+		for(let i = 0; i < 8; i++){
+			for(let j = 0; j < 8; j++){
+				test += 1;
+				// find the kings
+				if(board.grid[i][j].value === "\u2654"){
+					whiteKingPos = [i,j];
+				}
+				else if (board.grid[i][j].value === "\u265A"){
+					blackKingPos = [i,j]
+				}
+				// get the pieces
+				if(board.grid[i][j].color === 'white'){
+					whitePieces.push(board.grid[i][j]);
+				} else if (board.grid[i][j].color === 'black'){
+					blackPieces.push(board.grid[i][j]);
+				}
+			}
+		}
+		
+		if(turnColor === 'white'){
+			takingTurnPieces = whitePieces;
+			takingTurnKingPos = whiteKingPos;
+			opposingPieces = blackPieces;
+		} else {
+			takingTurnPieces = blackPieces;
+			takingTurnKingPos = blackKingPos;
+			opposingPieces = whitePieces;
+		}
+
+		// at most 136 moves
+		opposingPieces.forEach((opposingPiece)=>{ // go though opponent's pieces
+			let oppPieceMoves = opposingPiece.moves(); // array of moves for opposing piece
+			for(let i = 0; i < oppPieceMoves.length; i++){
+				test += 1;
+				if(oppPieceMoves[i].toString() === takingTurnKingPos.toString()){
+					boardInCheck = true; // if move equal kingPos board in check
+					break;
+				}
+			}
+		})
+
+		// we know if the board is in check or not, which is useful, we have the opponents moves
+		// now we make each possible move for the turnTaking side, and then run through the opposing
+		// pieces, calculate thier moves and see if they include the takingTurn kingPos, we also, need
+		// to check if we captured a piece, since we would then need to not calculate their moves, since
+		// they dead
+
+		takingTurnPieces.forEach((piece)=>{
+			piece.moves().forEach((choice)=>{
+				//in here at most 136 times
+				let valid = true;
+				let start = piece.position;
+				let finish = choice;
+				let finishPiece = board.grid[choice[0]][choice[1]];
+				let startPiece = piece;
+				let finishHtml = finishPiece.value;
+				let startHtml = startPiece.value;
+				safeMove(start,finish,board);
+				// run through opposingPieces and see if moves include takingTurnKingPos
+				// at most 136 moves (not really, always less) for 20 pieces 
+				for(let i = 0; i < opposingPieces.length; i++){
+					// if piece just got taken, don't go through it's moves
+					if(opposingPieces[i].position.toString() !== finish.toString()){
+						let oppPieceMoves = opposingPieces[i].moves(); // array of moves for opposing piece
+						for(let j = 0; j < oppPieceMoves.length; j++){
+							test += 1;
+							if(oppPieceMoves[j].toString() === takingTurnKingPos.toString()){
+								valid = false; // if move equal kingPos board in check
+								break;
+							}
+						}
+					}
+					if(!valid){break}
+				}
+				if(valid){validMoves.push(choice)}
+				safeUndoMove(start,finish,finishPiece,startPiece,board)
+			})
+		})
+
+		console.log('times thourgh in new function ===================> ', test);
+
+		return {
+			inCheck: !!boardInCheck,
+			validMoves: validMoves,
+			whiteKing: whiteKingPos,
+			blackKing: blackKingPos,
+			whitePieces: whitePieces,
+			blackPieces: blackPieces
+		}
 	}
 
 }
