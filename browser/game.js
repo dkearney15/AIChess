@@ -165,7 +165,7 @@ function takeTurn(event){
 		// }
 		//do the computer's move
 		$('.action').html('<h1>...</h1>');
-		setTimeout(() => { handleComputerMove(gameBoard,{value:0}); }, 300);
+		setTimeout(() => {handleComputerMove(gameBoard)}, 20);
 		stage = 1;
 	}
 }

@@ -1,16 +1,11 @@
-function handleComputerMove(board,node){
-	// if(checkMate('black', gameBoard)){
-	// 	$('.action').html('<h1>YOU WIN! HOORAY!</h1>');
-	// 	return;
-	// } else {
-		makeBestMove(board, node);
-		pawnPromotion(gameBoard);
-		$('.action').html('<h1>Your turn! Select a piece and place to put it!</h1>');
-	// }
+function handleComputerMove(board){
+	makeBestMove(board);
+	pawnPromotion(gameBoard);
+	$('.action').html('<h1>Your turn! Select a piece and place to put it!</h1>');
 }
 
-function makeBestMove(board,node){
-	const obj = _.sample(findBestMove(board,node));
+function makeBestMove(board){
+	const obj = _.sample(findBestMove(board));
 	move(obj.start,obj.finish,gameBoard);
 	$('#' + obj.start.join('-')).addClass('blue');
 	$('#' + obj.finish.join('-')).addClass('blue');
@@ -31,18 +26,9 @@ function pawnPromotionMove(move, piece, color){
 }
 
 function checkMateMove(obj, board, color){
-	let toggle = false;
 	safeMove(obj.start,obj.finish,board);
-	// if( color === 'black' && checkMate('white', board) ){
-	// 	// console.log('checkmate, white would loses')
-	// 	toggle = true;
-	// } else if ( color === 'white' && checkMate('black', board) ) {
-	// 	// console.log('checkmate, black would lose')
-	// 	toggle = true;
-	// }
 	const checkMate = board.evaluate(color).validMoves.length < 1 ? true : false;
 	safeUndoMove(obj.start,obj.finish,obj.finishPiece,obj.startPiece,board);
-	// return toggle;
 	return checkMate;
 }
 
@@ -105,35 +91,33 @@ function evaluateMove(obj, color, board){
 	return value;
 }
 
-function findBestMove(board, parentNode){
+function findBestMove(board){
 	const StartTime = Date.now();
 	let max;
 	let bestMove;
-	let count = 0;
-	//^^count is a counter for moves deep, right now we can only get 3 deep
+	let depth = 0;
+	//^^depth is a counter for moves deep, right now we can only get 3 deep
 	let x = 0;
 	//^^^x is a counter for individual moves looked at
-	function recur(board, parentNode, count){
+	function recur(board,depth,parentNode = {value:0}){
 		let color;
 		let minNode;
 		let minObj;
-		count % 2 === 0 ? color = 'black' : color = 'white';
-		if(count < 4) {
-			count += 1
-			// board.validMoves(color).forEach( (obj) => {
+		depth % 2 === 0 ? color = 'black' : color = 'white';
+		if(depth < 4) {
+			depth += 1
 			board.evaluate(color).validMoves.forEach((obj) => {	
 				x += 1;
-				//if(x%500===0){console.log(x + ' moves evaluated')}
 				let value = evaluateMove(obj, color, board) + parentNode.value;
 				let move;
 				//first time through the move is the object, then we always grab from the parent so we
 				//have the original move that the ai can actually make when we're all done
-				count < 2 ? move = obj : move = parentNode.move;
+				depth < 2 ? move = obj : move = parentNode.move;
 				let node = {value:value, move:move};
 				if(color === 'black'){
 					//if it's black, then we have to look at all possibilities, make the move, recur, later undo
 					safeMove(obj.start,obj.finish,board);
-					recur(board,node,count);
+					recur(board,depth,node);
 					safeUndoMove(obj.start,obj.finish,obj.finishPiece,obj.startPiece,board);
 				} else {
 					//if it's white, we want to find the best move and only deal with that 
@@ -149,11 +133,11 @@ function findBestMove(board, parentNode){
 				// if we defined minNode, then it was white's turn and we went thru all the moves
 				// found the best move for white and now we have to make it and recur
 				safeMove(minObj.start,minObj.finish,board);
-				recur(board,minNode,count);
+				recur(board,depth,minNode);
 				safeUndoMove(minObj.start,minObj.finish,minObj.finishPiece,minObj.startPiece,board);
 			}
 		} else {
-			//if we get down here we've gone as deep as the count will allow and we check on the
+			//if we get down here we've gone as deep as the depth will allow and we check on the
 			//value of the move we've been incrementing, if it's the new max or there is no max yet
 			//we record that in the bestMove array, all moves in the array have the same point value
 			if( (!max || parentNode.value > max) && parentNode.move){
@@ -164,12 +148,13 @@ function findBestMove(board, parentNode){
 			}
 		}
 	}
-	recur(board, parentNode, count);
+	recur(board,depth);
 	const finishTime = Date.now();
 	const timeTaken = (finishTime - StartTime) / 1000;
 	console.log('best move is worth ', max);
 	console.log(bestMove);
 	console.log('evaluated ' + x + ' moves in ' + timeTaken + ' seconds');
 	console.log( (x / timeTaken) + ' moves per second');
+	if(!bestMove){debugger;}
 	return bestMove;
 }
