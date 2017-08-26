@@ -1,100 +1,51 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8"> 
-<title>Chessboard using Pure CSS and HTML</title>
-<link href="style.css" type="text/css" rel="stylesheet">
-</head>
-<body>
-<div class="action"> 
-	
-</div>
+	<head>
+		<meta charset="UTF-8"> 
+		<title>Chessboard using Pure CSS and HTML</title>
+		<link href="style.css" type="text/css" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+		<script>
+		_ = _.noConflict(); // lets call ourselves _
+		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script type="text/javascript" src="allJs.js"></script>
+	</head>
+	<body>
+		<div class="action"></div>
 
-<div id="chessboard">
-    <!-- 1st -->
-    <div id="0-0" class="black">&#9814;</div>
-    <div id="0-1" class="white">&#9816;</div>
-    <div id="0-2" class="black">&#9815;</div>
-    <div id="0-3" class="white">&#9813;</div>
-    <div id="0-4" class="black">&#9812;</div>
-    <div id="0-5" class="white">&#9815;</div>
-    <div id="0-6" class="black">&#9816;</div>
-    <div id="0-7" class="white">&#9814;</div>
-    <!-- 2nd -->
-    <div id="1-0" class="white">&#9817;</div>
-    <div id="1-1" class="black">&#9817;</div>
-    <div id="1-2" class="white">&#9817;</div>
-    <div id="1-3" class="black">&#9817;</div>
-    <div id="1-4" class="white">&#9817;</div>
-    <div id="1-5" class="black">&#9817;</div>
-    <div id="1-6" class="white">&#9817;</div>
-    <div id="1-7" class="black">&#9817;</div>
-    <!-- 3th -->
-    <div id="2-0" class="black"></div>
-    <div id="2-1" class="white"></div>
-    <div id="2-2" class="black"></div>
-    <div id="2-3" class="white"></div>
-    <div id="2-4" class="black"></div>
-    <div id="2-5" class="white"></div>
-    <div id="2-6" class="black"></div>
-    <div id="2-7" class="white"></div>
-    <!-- 4st -->
-    <div id="3-0" class="white"></div>
-    <div id="3-1" class="black"></div>
-    <div id="3-2" class="white"></div>
-    <div id="3-3" class="black"></div>
-    <div id="3-4" class="white"></div>
-    <div id="3-5" class="black"></div>
-    <div id="3-6" class="white"></div>
-    <div id="3-7" class="black"></div>
-    <!-- 5th -->
-    <div id="4-0" class="black"></div>
-    <div id="4-1" class="white"></div>
-    <div id="4-2" class="black"></div>
-    <div id="4-3" class="white"></div>
-    <div id="4-4" class="black"></div>
-    <div id="4-5" class="white"></div>
-    <div id="4-6" class="black"></div>
-    <div id="4-7" class="white"></div>
-    <!-- 6th -->
-    <div id="5-0" class="white"></div>
-    <div id="5-1" class="black"></div>
-    <div id="5-2" class="white"></div>
-    <div id="5-3" class="black"></div>
-    <div id="5-4" class="white"></div>
-    <div id="5-5" class="black"></div>
-    <div id="5-6" class="white"></div>
-    <div id="5-7" class="black"></div>
-    <!-- 7th -->
-    <div id="6-0" class="black">&#9823;</div>
-    <div id="6-1" class="white">&#9823;</div>
-    <div id="6-2" class="black">&#9823;</div>
-    <div id="6-3" class="white">&#9823;</div>
-    <div id="6-4" class="black">&#9823;</div>
-    <div id="6-5" class="white">&#9823;</div>
-    <div id="6-6" class="black">&#9823;</div>
-    <div id="6-7" class="white">&#9823;</div>
-    <!-- 8th -->
-    <div id="7-0" class="white">&#9820;</div>
-    <div id="7-1" class="black">&#9822;</div>
-    <div id="7-2" class="white">&#9821;</div>
-    <div id="7-3" class="black">&#9819;</div>
-    <div id="7-4" class="white">&#9818;</div>
-    <div id="7-5" class="black">&#9821;</div>
-    <div id="7-6" class="white">&#9822;</div>
-    <div id="7-7" class="black">&#9820;</div>
-</div>
+		<div id="game-start-modal">
+			<div id="game-type-select">
+				<div class="player-select one-player">
+					<h1>One Player</h1>
+					<h4>Play against the computer.</h4>
+				</div>
+				<div class="player-select two-player">
+					<h1>Two Player</h1>
+					<h4>Play against a friend.</h4>
+				</div>
+			</div>
 
-</body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
-<script>
-_ = _.noConflict(); // lets call ourselves _
-</script>
+			<div id="name-select" style="display: none;">
+				<div class="player-select p1-name">
+					<h2>Player One Name</h2>
+					<form>
+					  <input type="text" name="p1-name"><br>
+					  <input type="submit" value="Submit">
+					</form>
+				</div>
+				<div class="player-select p2-name">
+					<h2>Player Two Name</h2>
+					<form>
+					  <input type="text" name="p2-name"><br>
+					  <input type="submit" value="Submit">
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div id="chessboard">
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-<script type="text/javascript" src="piece.js"></script>
-<script type="text/javascript" src="board.js"></script>
-<script type="text/javascript" src="game.js"></script>
-<script type="text/javascript" src="ai.js"></script>
+		</div>
+	</body>
 </html>

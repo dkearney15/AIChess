@@ -12,5 +12,15 @@
   },
   "dependencies": {
     "express": ">=4.13.3"
+  },
+  "devDependencies": {
+    "gulp": "latest",
+    "gulp-coffee": "latest",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "latest",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "latest",
+    "gulp-uglify": "^3.0.0",
+    "gulp-util": "latest"
   }
 }
