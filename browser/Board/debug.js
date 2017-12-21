@@ -1,4 +1,4 @@
-Board.prototype.logBoard = function(){
+Board.prototype.logBoard = () => {
 	this.grid.forEach((row, i) => {
 	  let rowString = '';
 	  let style = [];
