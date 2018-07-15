@@ -22,8 +22,10 @@ const PieceRest = './browser/Piece/**/*.js';
 const PlayerMain = './browser/Player/player.js';
 const PlayerRest = './browser/Player/**/*.js';
 
+const start = './browser/start.js';
+
 const homeOfAllJs = './browser/';
-const pathsArr = [HtmlMain, HtmlRest, MoveMain, MoveRest, PieceMain, PieceRest, BoardMain, BoardRest, PlayerMain, PlayerRest, GameMain, GameRest];
+const pathsArr = [HtmlMain, HtmlRest, MoveMain, MoveRest, PieceMain, PieceRest, BoardMain, BoardRest, PlayerMain, PlayerRest, GameMain, GameRest, start];
 // you gotta get smart and particular about file structure and reference errors
 // make this even more specific, it goes depth first, so you need to get piece.js 
 // before going into the sliding folder for example

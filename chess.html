@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8"> 
-		<title>Chessboard using Pure CSS and HTML</title>
-		<link href="style.css" type="text/css" rel="stylesheet">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
-		<script>
-		_ = _.noConflict(); // lets call ourselves _
-		</script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script type="text/javascript" src="allJs.js"></script>
-	</head>
-	<body>
-		<div class="action"></div>
 
-		<div id="game-start-modal">
+<head>
+    <meta charset="UTF-8">
+    <title>Chessboard using Pure CSS and HTML</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+    <script>
+    _ = _.noConflict(); // lets call ourselves _
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script type="text/javascript" src="allJs.js"></script>
+</head>
+
+<body>
+    <div class="action"></div>
+    <div id="game-start-modal">
+        <player-select-option v-if="stage === 1">
+
+        </player-select-option>
+        <name-entry v-if="stage === 2">
+
+        </name-entry>
+    </div>
+    <!-- <div id="game-start-modal">
 			<div id="game-type-select">
 				<div class="player-select one-player">
 					<h1>One Player</h1>
@@ -42,10 +52,9 @@
 					</form>
 				</div>
 			</div>
-		</div>
-		
-		<div id="chessboard">
+		</div> -->
+    <div id="chessboard">
+    </div>
+</body>
 
-		</div>
-	</body>
 </html>

@@ -74,6 +74,29 @@ class Piece {
 		this.value = value;
 	}
 }
+class Sliding extends Piece {
+	direction(x, y, board, position) {
+		const oppcol = this.color === 'white' ? 'black' : 'white';
+		const moves = [];
+		let i = position[0] + x;
+		let j = position[1] + y;
+		if(i > 7 || i < 0 || j > 7 || j < 0) return [];
+		//^^if the piece is against the edge of the board, there are no moves, so we return []
+		while(i < 8 && j < 8 && i > -1 && j > -1){
+			if(board.grid[i][j].value) break;
+			moves.push([i,j]); 
+			i += x;
+			j += y;
+		}
+		//below we check if the last piece we checked up here^^
+		//is an opponent's piece and is on the board
+		if(i < 8 && j < 8 && i > -1 && j > -1 && board.grid[i][j].color === oppcol){
+			moves.push([i,j]);
+		 	return moves;
+		}
+		return moves;
+	} 
+}
 class King extends Piece {
 	moves(board, position){
 		const king = this;
@@ -152,29 +175,6 @@ class Pawn extends Piece {
 	moves(board, position) {
 		return this.forwardMoves().concat(this.attacks());
 	}
-}
-class Sliding extends Piece {
-	direction(x, y, board, position) {
-		const oppcol = this.color === 'white' ? 'black' : 'white';
-		const moves = [];
-		let i = position[0] + x;
-		let j = position[1] + y;
-		if(i > 7 || i < 0 || j > 7 || j < 0) return [];
-		//^^if the piece is against the edge of the board, there are no moves, so we return []
-		while(i < 8 && j < 8 && i > -1 && j > -1){
-			if(board.grid[i][j].value) break;
-			moves.push([i,j]); 
-			i += x;
-			j += y;
-		}
-		//below we check if the last piece we checked up here^^
-		//is an opponent's piece and is on the board
-		if(i < 8 && j < 8 && i > -1 && j > -1 && board.grid[i][j].color === oppcol){
-			moves.push([i,j]);
-		 	return moves;
-		}
-		return moves;
-	} 
 }
 class Bishop extends Sliding {
 	moves(board, position){
@@ -274,7 +274,7 @@ class Board {
 
 
 
-Board.prototype.logBoard = function(){
+Board.prototype.logBoard = () => {
 	this.grid.forEach((row, i) => {
 	  let rowString = '';
 	  let style = [];
@@ -387,13 +387,6 @@ class Player {
 		this.name = name;
 	}
 }
-class AI extends Player {
-	
-}
-
-
-
-
 class Human extends Player {
 	listenForPieceSelection(color, board){
 		const human = this;
@@ -438,6 +431,13 @@ class Human extends Player {
 		//     3) highlight spaces so user can see their move
 	}
 }
+class AI extends Player {
+	
+}
+
+
+
+
 class Game {
 	constructor(player1, player2, takingTurn, turnsTaken = 0, winner, loser){
 		this.player1 = player1;
@@ -449,8 +449,8 @@ class Game {
 manipulateHTML.gameStartSequence = () => {
 	const onePlayerBtn = document.querySelector('.player-select.one-player');
 	const twoPlayerBtn = document.querySelector('.player-select.two-player');
-	const gameBoard = new Board();
-	gameBoard.setBoard();
+	window.gameBoard = new Board();
+	window.gameBoard.setBoard();
 	manipulateHTML.initializeBoard(gameBoard.grid);
 	onePlayerBtn.addEventListener('click', () => {
 		console.log('one player');
@@ -525,5 +525,53 @@ function nameSelection(playerCount){
 
 //start the damn game
 $( document ).ready(() => {
-	manipulateHTML.gameStartSequence();  
+	// manipulateHTML.gameStartSequence(); 
+
+	Vue.component('player-select-option', {
+	  	template: `
+	  		<div id="game-type-select">
+				<div class="player-select one-player" v-on:click="data.stage += 1">
+					<h1>One Player</h1>
+					<h4>Play against the computer.</h4>
+				</div>
+				<div class="player-select two-player" v-on:click="stage += 1">
+					<h1>Two Player</h1>
+					<h4>Play against a friend.</h4>
+				</div>
+			</div>`
+	});
+
+	Vue.component('name-entry', {
+	  	template: `			
+	  		<div id="name-select">
+				<div class="player-select p1-name">
+					<h2>Player One Name</h2>
+					<form>
+					  <input type="text" name="p1-name"><br>
+					  <input type="submit" value="Submit">
+					</form>
+				</div>
+				<div class="player-select p2-name">
+					<h2>Player Two Name</h2>
+					<form>
+					  <input type="text" name="p2-name"><br>
+					  <input type="submit" value="Submit">
+					</form>
+				</div>
+			</div>`
+	});
+
+	const gameStartModal = new Vue({
+		el: '#game-start-modal',
+		data: {
+	    	playerOptions: [
+	    		{ count: 1, text: 'Play against the computer.' },
+	    		{ count: 2, text: 'Play against a friend.' },
+	    	],
+	    	stage: 1
+	    },
+	    methods: {
+	    	// advance: () => { this.stage++; }
+	    }
+	});
 });
